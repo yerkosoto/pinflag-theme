@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+  
+  {{ 'base.css' | asset_url | stylesheet_tag: preload: true }}
+
+  {{ 'menu.css' | asset_url | stylesheet_tag }}
+  <script defer src="{{ 'menu.js' | asset_url }}"></script>
+  {{ 'cart-drawer.css' | asset_url | stylesheet_tag }}
+  <script defer src="{{ 'cart-drawer.js' | asset_url }}"></script>
+
+  {{ content_for_header }}
+  </head>
+
+  <body>
+    {% sections 'header-group' %}
+
+    {{ content_for_layout }}
+
+    {% sections 'footer-group' %}
+  </body>
+</html>

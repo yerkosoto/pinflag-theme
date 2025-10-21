@@ -1,0 +1,88 @@
+/* Basic menu styles for multi-level menu
+	 - first level visible
+	 - second level appears downward on hover
+	 - third level appears to the right on hover
+	 - minimal reset for lists inside .main-menu
+*/
+.main-menu,
+.main-menu ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.main-menu > li {
+  display: inline-block;
+  position: relative;
+}
+
+.main-menu > li > a {
+  display: block;
+  padding: 0.6rem 1rem;
+}
+
+/* Second level: hidden by default, shown below on hover */
+.main-menu .second-level {
+  display: none;
+  position: absolute;
+  top: 100%; /* below the parent li */
+  left: 0;
+  min-width: 10rem;
+  z-index: 50;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.main-menu > li:hover > .second-level,
+.main-menu > li:focus-within > .second-level {
+  display: block;
+}
+
+.main-menu .second-level li {
+  display: block;
+}
+
+.main-menu .second-level a {
+  padding: 0.5rem 0.8rem;
+  display: block;
+}
+
+/* Third level: positioned to the right of its parent (childlink) */
+.main-menu .third-level {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 100%; /* to the right of the parent childlink */
+  min-width: 10rem;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.main-menu .second-level li:hover > .third-level,
+.main-menu .second-level li:focus-within > .third-level {
+  display: block;
+}
+
+/* Small screen: stack menu and use JS toggle */
+@media (max-width: 768px) {
+  .main-menu {
+    display: block;
+  }
+  .main-menu > li {
+    display: block;
+  }
+  .main-menu .second-level,
+  .main-menu .third-level {
+    position: static;
+    display: none; /* will be toggled with JS */
+    box-shadow: none;
+  }
+  .main-menu .open > .second-level,
+  .main-menu .open > .third-level {
+    display: block;
+  }
+}
+
+ul.third-level {
+  height: 100%;
+}

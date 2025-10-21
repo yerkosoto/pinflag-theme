@@ -1,0 +1,101 @@
+<li class="card-product" data-product-id="{{ card_product.id }}">
+  {%- if card_product.featured_media -%}
+    <div class="media-wrapper">
+      <img
+        src="{{ card_product.featured_media | image_url: width: 533 }}"
+        alt="{{ card_product.featured_media.alt | escape }}"
+        class="motion-reduce product_image_1"
+        height=""
+        width=""
+      >
+    </div>
+  {%- endif -%}
+
+  <h3>{{ card_product.title }}</h3>
+  {% assign variants = card_product.variants %}
+  {% assign min_price = card_product.price_min %}
+  {% assign max_price = card_product.price_max %}
+  {% assign max_compare = card_product.compare_at_price_max %}
+
+  {%- comment -%}
+    Prefer calcular el descuento relativo a la variante que tiene el precio mínimo
+    (así el % refleja lo que el cliente obtiene por la variante más barata).
+    Si esa variante no tiene compare_at_price, hacemos fallback a compare_at_price_max.
+  {%- endcomment -%}
+  {% assign min_variant = variants | where: "price", min_price | first %}
+  {% assign compare_base = min_variant.compare_at_price %}
+  {% if compare_base == blank %}
+    {% assign compare_base = max_compare %}
+  {% endif %}
+
+  {% if compare_base and compare_base > min_price %}
+    {% assign discount = compare_base | minus: min_price %}
+    {% assign discount_percent = discount | times: 100 | divided_by: compare_base %}
+    <span class="discount">-{{ discount_percent | round }}%</span>
+  {% endif %}
+
+  <p class="card-price">
+    {% if min_price == max_price %}
+      {{ min_price | money }}
+      {% if max_compare > min_price %}
+        <span class="compare-at-price"
+          ><s>{{ max_compare | money }}</s></span
+        >
+      {% endif %}
+    {% else %}
+      {{ min_price | money }} - {{ max_price | money }}
+    {% endif %}
+  </p>
+
+  {% assign option_count = card_product.options.size %}
+
+  {% for option_index in (0..option_count) %}
+    {% assign option_name = card_product.options[option_index] %}
+    {% assign option_values_str = '' %}
+
+    {% comment %} Obtener valores únicos para esta opción {% endcomment %}
+    {% for variant in variants %}
+      {% assign val = variant.options[option_index] %}
+      {% unless option_values_str contains val or val == blank %}
+        {% assign option_values_str = option_values_str | append: val | append: ',' %}
+      {% endunless %}
+    {% endfor %}
+
+    {% assign option_values = option_values_str | split: ',' %}
+
+    {% if option_values.size > 0 and option_values[0] != '' %}
+      <div class="options-variants">
+        <ul class="option" data-option-index="{{ option_index }}" data-option-name="{{ option_name }}">
+          <span>{{ option_name }}</span>
+          {% for value in option_values %}
+            {% assign in_stock = false %}
+            {% for variant in variants %}
+              {% if variant.options[option_index] == value and variant.available %}
+                {% assign in_stock = true %}
+                {% break %}
+              {% endif %}
+            {% endfor %}
+            <li
+              data-value="{{ value }}"
+              {% unless in_stock %}
+                class="out-stock"
+              {% endunless %}
+            >
+              {{ value }}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  {% endfor %}
+
+  <!-- Guardamos info de variantes para JS -->
+  <script type="application/json" class="variants-data">
+    {{ card_product.variants | json }}
+  </script>
+
+  <button type="button" class="add_to_cart" disabled>Agregar al carrito</button>
+  
+  <button type="button" class="buy_now" disabled>Comprar ahora</button>
+</li>
+{{ 'card-product.js' | asset_url | script_tag }}

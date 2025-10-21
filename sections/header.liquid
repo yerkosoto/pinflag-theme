@@ -1,0 +1,42 @@
+<header>
+  {% if settings.main_logo %}
+    <div class="main_logo">
+      <a href="{{ routes.root_url }}">
+        {{ settings.main_logo | image_url: width: 300 | image_tag: alt: shop.name }}
+      </a>
+    </div>
+  {% else %}
+    <h2 class="header__title">
+      {{ shop.name | link_to: routes.root_url }}
+    </h2>
+  {% endif %}
+
+  {% render 'menu' %}
+
+  <div class="header__icons">
+    {% if shop.customer_accounts_enabled %}
+      {{ 'icon-account.svg' | inline_asset_content | link_to: routes.account_url }}
+    {% endif %}
+
+    <a href="{{ routes.cart_url }}" class="header__cart-icon">
+      {% if cart.item_count > 0 %}
+        <sup>{{ cart.item_count }}</sup>
+      {% endif %}
+
+      {{ 'icon-cart.svg' | inline_asset_content }}
+    </a>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "t:general.header",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "t:labels.menu"
+    }
+  ]
+}
+{% endschema %}

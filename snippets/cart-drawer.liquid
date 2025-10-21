@@ -1,0 +1,29 @@
+<!-- Cart drawer markup: hidden by default. JS updates contents and toggles visibility -->
+<div id="cart-drawer-overlay" class="cart-drawer__overlay" hidden></div>
+
+<aside id="cart-drawer" class="cart-drawer" aria-hidden="true">
+	<header class="cart-drawer__header">
+		<h2>Tu bolsa</h2>
+		<button id="cart-drawer-close" class="cart-drawer__close" aria-label="Cerrar carrito">×</button>
+	</header>
+
+	<div class="cart-drawer__body">
+		<ul id="cart-drawer-items" class="cart-drawer__items">
+			<!-- Items serán renderizados por JS -->
+		</ul>
+		<div id="cart-drawer-empty" class="cart-drawer__empty">Tu carrito está vacío</div>
+	</div>
+
+	<footer class="cart-drawer__footer">
+		<div class="cart-drawer__subtotal">Subtotal: <span id="cart-drawer-subtotal">{{ cart.total_price | money }}</span></div>
+			<div class="cart-drawer__actions">
+				<a href="{{ routes.cart_url }}" class="button">Ver carrito</a>
+				<button id="cart-drawer-clear" class="button">Vaciar</button>
+				<button id="cart-drawer-checkout" class="button button--primary">Pagar</button>
+			</div>
+	</footer>
+</aside>
+
+<!-- Expose a container for possible runtime messages -->
+<div id="cart-drawer-status" aria-live="polite" class="sr-only"></div>
+    

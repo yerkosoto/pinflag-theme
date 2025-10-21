@@ -1,0 +1,5 @@
+ul.pagination-list {
+  display: flex;
+  list-style: none;
+  justify-content: center;
+}

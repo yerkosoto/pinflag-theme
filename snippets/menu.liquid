@@ -1,0 +1,35 @@
+<ul class="main-menu">
+  {%- for link in section.settings.menu.links -%}
+    <li>
+      {%- if link.links != blank -%}
+        <a href="{{ link.url }}">
+          {{ link.title | escape }}
+        </a>
+        <ul class="second-level">
+          {%- for childlink in link.links -%}
+            <li>
+              <a href="{{ childlink.url }}">
+                {{ childlink.title | escape }}
+              </a>
+              {%- if childlink.links != blank -%}
+                <ul class="third-level">
+                  {%- for grandchildlink in childlink.links -%}
+                    <li>
+                      <a href="{{ grandchildlink.url }}">
+                        {{ grandchildlink.title | escape }}
+                      </a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- else -%}
+        <a href="{{ link.url }}">
+          {{ link.title | escape }}
+        </a>
+      {%- endif -%}
+    </li>
+  {%- endfor -%}
+</ul>

@@ -1,0 +1,67 @@
+{{ 'card-product.css' | asset_url | stylesheet_tag }}
+{{ 'main-collection.css' | asset_url | stylesheet_tag }}
+
+<section>
+  <h2>{{ collection.title | default: 'Products' }}</h2>
+  {% assign per_page = section.settings.item_per_page | default: 12 %}
+
+  {% paginate collection.products by  per_page %}
+    <ul class="collections-items"> 
+      {% for product in collection.products %}
+        {% render 'card-product', card_product: product %}
+      {% endfor %}
+    </ul>
+
+    {% if paginate.pages > 1 %}
+      <nav class="pagination" role="navigation" aria-label="Paginación">
+        <ul class="pagination-list">
+          {% if paginate.previous.is_link %}
+            <li>
+              <a href="{{ paginate.previous.url }}" class="pagination-link pagination-previous" aria-label="Página anterior">Anterior</a>
+            </li>
+          {% else %}
+            <li>
+              <span class="pagination-link pagination-previous disabled" aria-disabled="true">Anterior</span>
+            </li>
+          {% endif %}
+
+          {% for part in paginate.parts %}
+            {% if part.is_link %}
+              <li>
+                <a href="{{ part.url }}" class="pagination-link" aria-label="Página {{ part.title }}">{{ part.title }}</a>
+              </li>
+            {% else %}
+              <li>
+                <span class="pagination-link current" aria-current="page">{{ part.title }}</span>
+              </li>
+            {% endif %}
+          {% endfor %}
+
+          {% if paginate.next.is_link %}
+            <li>
+              <a href="{{ paginate.next.url }}" class="pagination-link pagination-next" aria-label="Página siguiente">Siguiente</a>
+            </li>
+          {% else %}
+            <li>
+              <span class="pagination-link pagination-next disabled" aria-disabled="true">Siguiente</span>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+  {% endpaginate %}
+</section>
+
+{% schema %}
+{
+  "name": "Collections",
+  "settings": [
+    {
+      "type": "number",
+      "id": "item_per_page",
+      "label": "Items por página",
+      "default": 12
+    }
+  ]
+}
+{% endschema %}

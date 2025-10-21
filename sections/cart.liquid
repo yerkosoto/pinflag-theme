@@ -1,0 +1,43 @@
+<section id="cart">
+  <h1>Carrito</h1>
+
+  {% if cart.item_count > 0 %}
+    <ul>
+      {% for item in cart.items %}
+        <li>
+          <strong>{{ item.product.title }}</strong>
+          
+          {% if item.variant.title != "Default Title" %}
+            — {{ item.variant.title }}
+          {% endif %}
+          
+          — {{ item.final_price | money }}
+
+          <!-- Form cantidad + / - -->
+          <form action="/cart/change" method="post" class="cart-quantity-form" data-item-key="{{ item.key }}">
+            <input type="hidden" name="id" value="{{ item.key }}">
+            <button type="button" class="quantity-decrement" {% if item.quantity <= 1 %}disabled{% endif %}>-</button>
+            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" size="2" aria-label="Cantidad de {{ item.product.title }}">
+            <button type="button" class="quantity-increment">+</button>
+          </form>
+
+          <!-- Botón eliminar -->
+          <form action="/cart/change" method="post" style="display:inline;">
+            <input type="hidden" name="id" value="{{ item.key }}">
+            <input type="hidden" name="quantity" value="0">
+            <button type="submit">Eliminar</button>
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <p><strong>Total:</strong> {{ cart.total_price | money }}</p>
+
+    <form action="/cart" method="post">
+      <button type="submit" name="checkout">Finalizar compra</button>
+    </form>
+  {% else %}
+    <p>Tu carrito está vacío 🫠</p>
+  {% endif %}
+</section>
+{{ 'cart.js' | asset_url | script_tag }}
